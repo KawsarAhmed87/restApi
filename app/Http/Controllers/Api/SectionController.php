@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Model\Subject;
 use Illuminate\Http\Request;
+use App\Model\Section;
 
-class SubjectController extends Controller
+class SectionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        $subjects = Subject::all();
+        $subjects = Section::all();
         return response()->json($subjects);
     }
 
@@ -39,12 +39,11 @@ class SubjectController extends Controller
     {
         $validateData = $request->validate([
             'class_id' => 'required',
-            'subject_name' => 'required|unique:subjects|max:25',
-            'subject_code' => 'required|unique:subjects|max:25',
+            'section_name' => 'required|max:25',
         ]);
 
-        $data = Subject::create($request->all());
-        return response('Subject inserted successfully');
+        $data = Section::create($request->all());
+        return response('Section inserted successfully');
     }
 
     /**
@@ -55,8 +54,8 @@ class SubjectController extends Controller
      */
     public function show($id)
     {
-        $subject = Subject::findorfail($id);
-        return response()->json($subject);
+        $section = Section::findorfail($id);
+        return response()->json($section);
     }
 
     /**
@@ -79,9 +78,9 @@ class SubjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $subject = Subject::findorfail($id);
+        $subject = Section::findorfail($id);
         $subject->update($request->all());
-        return response('Subject updated');
+        return response('Section updated');
     }
 
     /**
@@ -92,7 +91,7 @@ class SubjectController extends Controller
      */
     public function destroy($id)
     {
-        Subject::where('id', $id)->delete();
-        return response('Subject Deleted');
+        Section::where('id', $id)->delete();
+        return response('Section Deleted');
     }
 }
