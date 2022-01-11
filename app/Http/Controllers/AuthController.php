@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\User;
+use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     /**
@@ -14,7 +15,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     /**
@@ -27,7 +28,7 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Email or Password Invalid'], 401);
         }
 
         return $this->respondWithToken($token);
@@ -79,5 +80,22 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
+    }
+
+    public function register(Request $request){
+        $validateData = $request->validate([
+            'name' => 'required|max:190',
+            'email' => 'required|unique:users|max:190',
+            'password' => 'required|confirmed'
+        ]);
+
+        $data = array();
+
+        $data['name'] = $request->name;
+        $data['email'] = $request->email;
+        $data['password'] = Hash::make($request->password);
+
+         User::create($data);
+        return $this->login($request);
     }
 }
