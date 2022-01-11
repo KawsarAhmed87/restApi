@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Model\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use DB;
@@ -16,7 +17,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $student = Student::all();
+        return response()->json($student);
     }
 
     /**
